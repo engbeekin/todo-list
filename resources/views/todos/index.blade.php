@@ -36,32 +36,35 @@
                     <button type="submit" class="btn btn-primary fs-4">Add Todo</button>
                 </form>
                 @forelse ($todos as $todo)
-                    @if ($todo->status == 0)
-                        <div class="row">
+                    <div class="row">
 
-                            <div class="col-10">
-                                <form action="{{ route('todo.update', $todo->id) }}" method="post">
-                                    @csrf
-                                    @method("PUT")
+                        <div class="col-10">
+                            <form action="{{ route('todo.update', $todo->id) }}" method="post">
+                                @csrf
+                                @method("PUT")
 
-                                    <input type="checkbox" style=" height: 30px;width:40px"
-                                        onChange="this.form.submit()">
+                                <input type="checkbox" style=" height: 30px;width:40px" onChange="this.form.submit()">
+                                @if ($todo->status == 0)
                                     <h1 style=" display: inline-block" id="name">{{ $todo->name }}</h1>
-                                    <p style="display: inline-block" class="ms-4">
-                                        {{ Carbon\Carbon::parse($todo->created_at)->diffForHumans() }}</p>
-                                </form>
-
-                            </div>
-                            <div class="col-2">
-                                <form action="{{ route('todo.destroy', $todo->id) }}" method="POST">
-                                    @csrf
-                                    @method('Delete')
-                                    <button type="submit" class="btn  btn-danger"><i
-                                            class="bi bi-trash"></i></button>
-                                </form>
-                            </div>
+                                @elseif ($todo->status == 1)
+                                    <h1 style=" display: inline-block; text-decoration-line: line-through" id="name">
+                                        {{ $todo->name }}</h1>
+                                    <p style="display: inline-block" class="ms-4 badge bg-primary rounded-pill">
+                                        {{ Carbon\Carbon::parse($todo->completed_at)->diffForHumans() }} Completed
+                                    </p>
+                                @endif
+                                <p style="display: inline-block" class="ms-4 badge bg-success rounded-pill">
+                                    {{ Carbon\Carbon::parse($todo->created_at)->diffForHumans() }} Created </p>
+                            </form>
                         </div>
-                    @endif
+                        <div class="col-2">
+                            <form action="{{ route('todo.destroy', $todo->id) }}" method="POST">
+                                @csrf
+                                @method('Delete')
+                                <button type="submit" class="btn  btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
                 @empty
                     <h3 class="text-center text-dark mt-3">There's no todos now</h3>
                 @endforelse
