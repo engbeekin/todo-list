@@ -14,7 +14,9 @@ class TodoController extends Controller
      */
     public function index()
     {
-        //
+        $todos=Todo::orderby()->get();
+
+        return view('todos.index',compact('todos'));
     }
 
     /**
@@ -35,19 +37,11 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Todo::create($request->all());
+        return to_route('todo.index')->with('message','added Todo successfully');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Todo $todo)
-    {
-        //
-    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -67,9 +61,13 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Todo $todo)
+    public function update( $id)
     {
-        //
+        $todo=Todo::whereId($id)->update([
+            'status'=>1,
+            'completed_at'=>now(),
+        ]);
+        return to_route('todo.index')->with('message','completed todo succussfully');
     }
 
     /**
@@ -80,6 +78,10 @@ class TodoController extends Controller
      */
     public function destroy(Todo $todo)
     {
-        //
+        $todo->delete();
+        return to_route('todo.index')->with('delete','Todo Deleting Successfully');
     }
+
+
+
 }
